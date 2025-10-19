@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zole - Card Game Lobby</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-dark: #0f2a2a;
+            --primary-medium: #1a3a3a;
+            --primary-light: #2d5a5a;
+            --accent-teal: #2dd4bf;
+            --accent-gold: #fbbf24;
+            --accent-orange: #f59e0b;
+            --accent-red: #ef4444;
+            --text-light: #f0f9ff;
+            --text-white: #ffffff;
+            --text-gray: #94a3b8;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --sidebar-bg: rgba(15, 42, 42, 0.95);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 50%, var(--primary-light) 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--accent-teal);
+            text-shadow: 0 2px 10px rgba(45, 212, 191, 0.4);
+            letter-spacing: 1px;
+        }
+
+        .logo-subtitle {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-top: 5px;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--card-bg);
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+        }
+
+        .player-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-orange), var(--accent-red));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            border: 2px solid var(--accent-gold);
+        }
+
+        .player-details h2 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .player-stats {
+            display: flex;
+            gap: 15px;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+
+        .online-stats {
+            text-align: center;
+            background: var(--card-bg);
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+        }
+
+        .online-stats h3 {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: var(--accent-teal);
+        }
+
+        /* Navigation Styles */
+        .navigation {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 50px;
+            padding: 6px;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+        }
+
+        .nav-tab {
+            padding: 10px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(45deg, var(--accent-teal), var(--accent-gold));
+            color: var(--primary-dark);
+            box-shadow: 0 4px 15px rgba(45, 212, 191, 0.3);
+        }
+
+        .nav-tab:not(.active):hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Rooms Section */
+        .rooms-section {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rooms-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-filters {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+            width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-light);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-gray);
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-light);
+            font-size: 14px;
+            min-width: 130px;
+        }
+
+        .rooms-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .room-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .room-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-teal), var(--accent-gold));
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            border-color: rgba(45, 212, 191, 0.3);
+        }
+
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .room-type {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent-gold);
+        }
+
+        .room-speed {
+            background: var(--primary-light);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .room-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 3px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .room-players {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .player-avatars {
+            display: flex;
+        }
+
+        .player-avatars .small-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            margin-left: -8px;
+            border: 2px solid var(--primary-medium);
+        }
+
+        .player-avatars .small-avatar:first-child {
+            margin-left: 0;
+        }
+
+        .players-count {
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        .room-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-waiting {
+            background: rgba(45, 212, 191, 0.2);
+            color: var(--accent-teal);
+        }
+
+        .status-playing {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--accent-red);
+        }
+
+        .btn-enter {
+            padding: 8px 20px;
+            background: var(--accent-teal);
+            color: var(--primary-dark);
+            border: none;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-enter:hover {
+            background: #22b3a0;
+            transform: scale(1.05);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 350px;
+            background: var(--sidebar-bg);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--accent-teal);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .checkbox-item input {
+            accent-color: var(--accent-teal);
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper select {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-light);
+            font-size: 14px;
+            appearance: none;
+            transition: var(--transition);
+        }
+
+        .select-wrapper:after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--text-gray);
+        }
+
+        .select-wrapper select:focus {
+            outline: none;
+            border-color: var(--accent-teal);
+            box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2);
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-teal);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--accent-teal), var(--accent-gold));
+            color: var(--primary-dark);
+            box-shadow: 0 4px 15px rgba(45, 212, 191, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(45, 212, 191, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Footer Styles */
+        .footer {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .legend-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .icon-p { background: var(--accent-teal); }
+        .icon-m { background: var(--accent-gold); }
+        .icon-g { background: var(--accent-orange); }
+        .icon-private { background: var(--accent-red); }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .footer-link {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .footer-link:hover {
+            color: var(--accent-teal);
+        }
+
+        .timestamp {
+            color: var(--text-gray);
+            font-size: 14px;
+            text-align: right;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1100px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                order: -1;
+            }
+            
+            .rooms-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .player-info {
+                justify-content: center;
+            }
+            
+            .search-filters {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .footer-links {
+                justify-content: center;
+            }
+            
+            .timestamp {
+                text-align: center;
+            }
+        }
+
+        /* iFrame specific styles */
+        .iframe-mode {
+            padding: 10px;
+        }
+
+        .iframe-mode .app-container {
+            min-height: 680px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header fade-in">
+                <div class="logo-section">
+                    <div>
+                        <img style="height: 35px;" src="logo.png" alt="">
+                        <!-- <div class="logo">ZOLE</div> -->
+                        <div class="logo-subtitle">spelezoli.lv</div>
+                    </div>
+                </div>
+                
+                <div class="online-stats">
+                    <h3><i class="fas fa-users"></i> Currently Online</h3>
+                    <p>248 players, 47 rooms</p>
+                </div>
+                
+                <div class="player-info">
+                    <div class="player-avatar pulse">U</div>
+                    <div class="player-details">
+                        <h2>Urzula Garkains</h2>
+                        <div class="player-stats">
+                            <div class="stat"><i class="fas fa-trophy"></i> Lvl. 3</div>
+                            <div class="stat"><i class="fas fa-coins"></i> 2,788</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Navigation Tabs -->
+            <nav class="navigation">
+                <div class="nav-tabs">
+                    <div class="nav-tab active">ROOMS</div>
+                    <div class="nav-tab">TOP PLAYERS</div>
+                    <div class="nav-tab">POWER RANKINGS</div>
+                    <div class="nav-tab">TOURNAMENTS</div>
+                    <div class="nav-tab">MY INFO</div>
+                </div>
+            </nav>
+
+            <!-- Rooms Section -->
+            <section class="rooms-section fade-in">
+                <div class="rooms-header">
+                    <h2 class="section-title"><i class="fas fa-list"></i> CHOOSE A ROOM</h2>
+                    <div class="search-filters">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search rooms...">
+                        </div>
+                        <select class="filter-select">
+                            <option>All Types</option>
+                            <option>With pules</option>
+                            <option>Pro</option>
+                            <option>4 player table</option>
+                        </select>
+                        <select class="filter-select">
+                            <option>All Bets</option>
+                            <option>1:10</option>
+                            <option>1:25</option>
+                            <option>1:50</option>
+                            <option>1:100</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="rooms-container">
+                    <!-- Room 1 -->
+                    <div class="room-card">
+                        <div class="room-header">
+                            <span class="room-type">With pules</span>
+                            <span class="room-speed"><i class="fas fa-clock"></i> Normal</span>
+                        </div>
+                        
+                        <div class="room-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Bet</span>
+                                <span class="detail-value">1:25</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Min Games</span>
+                                <span class="detail-value">1</span>
+                            </div>
+                        </div>
+                        
+                        <div class="room-players">
+                            <div class="player-avatars">
+                                <div class="small-avatar">G</div>
+                                <div class="small-avatar">A</div>
+                                <div class="small-avatar">+1</div>
+                            </div>
+                            <span class="players-count">2/3 players</span>
+                        </div>
+                        
+                        <div class="room-status">
+                            <span class="status-badge status-waiting">Waiting</span>
+                            <button class="btn-enter">ENTER</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Room 2 -->
+                    <div class="room-card">
+                        <div class="room-header">
+                            <span class="room-type">Pro Table</span>
+                            <span class="room-speed"><i class="fas fa-bolt"></i> Fast</span>
+                        </div>
+                        
+                        <div class="room-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Bet</span>
+                                <span class="detail-value">1:50</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Min Games</span>
+                                <span class="detail-value">3</span>
+                            </div>
+                        </div>
+                        
+                        <div class="room-players">
+                            <div class="player-avatars">
+                                <div class="small-avatar">A</div>
+                                <div class="small-avatar">D</div>
+                            </div>
+                            <span class="players-count">2/3 players</span>
+                        </div>
+                        
+                        <div class="room-status">
+                            <span class="status-badge status-waiting">Waiting</span>
+                            <button class="btn-enter">ENTER</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Room 3 -->
+                    <div class="room-card">
+                        <div class="room-header">
+                            <span class="room-type">4 Player Table</span>
+                            <span class="room-speed"><i class="fas fa-clock"></i> Normal</span>
+                        </div>
+                        
+                        <div class="room-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Bet</span>
+                                <span class="detail-value">1:100</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Min Games</span>
+                                <span class="detail-value">5</span>
+                            </div>
+                        </div>
+                        
+                        <div class="room-players">
+                            <div class="player-avatars">
+                                <div class="small-avatar">G</div>
+                                <div class="small-avatar">L</div>
+                                <div class="small-avatar">+2</div>
+                            </div>
+                            <span class="players-count">2/4 players</span>
+                        </div>
+                        
+                        <div class="room-status">
+                            <span class="status-badge status-playing">Playing</span>
+                            <button class="btn-enter" disabled>FULL</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Room 4 -->
+                    <div class="room-card">
+                        <div class="room-header">
+                            <span class="room-type">Private</span>
+                            <span class="room-speed"><i class="fas fa-shield-alt"></i> Private</span>
+                        </div>
+                        
+                        <div class="room-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Bet</span>
+                                <span class="detail-value">1:10</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Min Games</span>
+                                <span class="detail-value">1</span>
+                            </div>
+                        </div>
+                        
+                        <div class="room-players">
+                            <div class="player-avatars">
+                                <div class="small-avatar">U</div>
+                                <div class="small-avatar">A</div>
+                            </div>
+                            <span class="players-count">2/3 players</span>
+                        </div>
+                        
+                        <div class="room-status">
+                            <span class="status-badge status-waiting">Waiting</span>
+                            <button class="btn-enter">ENTER</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Room 5 -->
+                    <div class="room-card">
+                        <div class="room-header">
+                            <span class="room-type">With pules</span>
+                            <span class="room-speed"><i class="fas fa-bolt"></i> Fast</span>
+                        </div>
+                        
+                        <div class="room-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Bet</span>
+                                <span class="detail-value">1:25</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Min Games</span>
+                                <span class="detail-value">3</span>
+                            </div>
+                        </div>
+                        
+                        <div class="room-players">
+                            <div class="player-avatars">
+                                <div class="small-avatar">M</div>
+                                <div class="small-avatar">K</div>
+                                <div class="small-avatar">J</div>
+                            </div>
+                            <span class="players-count">3/3 players</span>
+                        </div>
+                        
+                        <div class="room-status">
+                            <span class="status-badge status-playing">Playing</span>
+                            <button class="btn-enter" disabled>FULL</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Room 6 -->
+                    <div class="room-card">
+                        <div class="room-header">
+                            <span class="room-type">Pro Table</span>
+                            <span class="room-speed"><i class="fas fa-clock"></i> Normal</span>
+                        </div>
+                        
+                        <div class="room-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Bet</span>
+                                <span class="detail-value">1:50</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Min Games</span>
+                                <span class="detail-value">5</span>
+                            </div>
+                        </div>
+                        
+                        <div class="room-players">
+                            <div class="player-avatars">
+                                <div class="small-avatar">P</div>
+                            </div>
+                            <span class="players-count">1/3 players</span>
+                        </div>
+                        
+                        <div class="room-status">
+                            <span class="status-badge status-waiting">Waiting</span>
+                            <button class="btn-enter">ENTER</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <footer class="footer fade-in">
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-icon icon-p">P</div>
+                            <span>With pules</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-icon icon-m">M</div>
+                            <span>Small Table</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-icon icon-g">G</div>
+                            <span>Large Table</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-icon icon-private"><i class="fas fa-lock"></i></div>
+                            <span>Private</span>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">Support</a>
+                        <a href="#" class="footer-link">Guide</a>
+                        <a href="#" class="footer-link">Money History</a>
+                        <a href="#" class="footer-link">Points History</a>
+                        <a href="#" class="footer-link">Blocked Players</a>
+                        <a href="#" class="footer-link">Game Help</a>
+                        <a href="#" class="footer-link">About</a>
+                    </div>
+                    
+                    <div class="timestamp">13-09-2025 22:40:15</div>
+                </footer>
+            </section>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h2 class="sidebar-title"><i class="fas fa-plus-circle"></i> NEW ROOM</h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Game Type</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="pules" checked>
+                            <label for="pules">With pules</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="pro">
+                            <label for="pro">Pro</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="4player">
+                            <label for="4player">4 player table</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="private">
+                            <label for="private">Private</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Table Size</label>
+                    <div class="select-wrapper">
+                        <select>
+                            <option>Small</option>
+                            <option>Normal</option>
+                            <option>Large</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Speed</label>
+                    <div class="select-wrapper">
+                        <select>
+                            <option>Slow (25s)</option>
+                            <option>Normal</option>
+                            <option>Fast</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Bet</label>
+                    <div class="select-wrapper">
+                        <select>
+                            <option>1:10</option>
+                            <option>1:25</option>
+                            <option>1:50</option>
+                            <option>1:100</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Games Minimum</label>
+                    <div class="select-wrapper">
+                        <select>
+                            <option>1</option>
+                            <option>3</option>
+                            <option>5</option>
+                            <option>10</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="toggle-switch">
+                    <span>Allow others to join</span>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <button class="btn btn-primary">
+                    <i class="fas fa-door-open"></i> CREATE ROOM
+                </button>
+            </div>
+            
+            <div class="sidebar-section">
+                <h2 class="sidebar-title"><i class="fas fa-gamepad"></i> QUICK ACTIONS</h2>
+                
+                <button class="btn btn-secondary">
+                    <i class="fas fa-gift"></i> LUCKY WHEEL
+                </button>
+                
+                <button class="btn btn-secondary">
+                    <i class="fas fa-shopping-cart"></i> ZOLE SHOP
+                </button>
+                
+                <button class="btn btn-secondary">
+                    <i class="fas fa-trophy"></i> MY STATS
+                </button>
+                
+                <button class="btn btn-secondary">
+                    <i class="fas fa-cog"></i> SETTINGS
+                </button>
+            </div>
+            
+            <div class="sidebar-section">
+                <h2 class="sidebar-title"><i class="fas fa-info-circle"></i> GAME INFO</h2>
+                <p style="font-size: 14px; line-height: 1.5; color: var(--text-gray);">
+                    Zole is a traditional Latvian card game for 2-4 players. The 3-player version is most popular. Create a room and wait for others to join, or join an existing room to start playing.
+                </p>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Room card hover effects
+        document.querySelectorAll('.room-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-box input');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            document.querySelectorAll('.room-card').forEach(card => {
+                const roomType = card.querySelector('.room-type').textContent.toLowerCase();
+                if (roomType.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Filter functionality
+        document.querySelectorAll('.filter-select').forEach(select => {
+            select.addEventListener('change', function() {
+                console.log(`Filter changed: ${this.value}`);
+            });
+        });
+
+        // Toggle switch animation
+        document.querySelectorAll('.switch input').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const slider = this.nextElementSibling;
+                if (this.checked) {
+                    slider.style.transform = 'translateX(26px)';
+                } else {
+                    slider.style.transform = 'translateX(0)';
+                }
+            });
+        });
+
+        // Enter room button functionality
+        document.querySelectorAll('.btn-enter').forEach(button => {
+            if (!button.disabled) {
+                button.addEventListener('click', function() {
+                    this.textContent = 'JOINING...';
+                    this.style.background = '#1a9e8b';
+                    setTimeout(() => {
+                        alert('Joining room...');
+                        this.textContent = 'ENTER';
+                        this.style.background = '';
+                    }, 1000);
+                });
+            }
+        });
+
+        // Create room button functionality
+        document.querySelector('.btn-primary').addEventListener('click', function() {
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> CREATING...';
+            setTimeout(() => {
+                alert('Room created successfully!');
+                this.innerHTML = '<i class="fas fa-door-open"></i> CREATE ROOM';
+            }, 1500);
+        });
+
+        // Add pulse animation to player avatar periodically
+        setInterval(() => {
+            document.querySelector('.player-avatar').classList.add('pulse');
+            setTimeout(() => {
+                document.querySelector('.player-avatar').classList.remove('pulse');
+            }, 1000);
+        }, 8000);
+    </script>
+</body>
+</html>
