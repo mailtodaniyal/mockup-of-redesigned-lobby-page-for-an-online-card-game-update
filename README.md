@@ -1,0 +1,1 @@
+# mockup-of-redesigned-lobby-page-for-an-online-card-game-update
